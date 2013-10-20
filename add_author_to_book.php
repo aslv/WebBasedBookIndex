@@ -14,12 +14,17 @@ if (isset($_GET) && isset($_GET['author']) && isset($_GET['title']))
 	$q = mysqli_query($connection, 'SELECT book_title FROM books WHERE book_id=' . $bookID) or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
 	if (mysqli_num_rows($q) == 0)
 	{
-		$error='Няма такава книга!';
+		$error = 'Няма такава книга!';
 	}
 	$q = mysqli_query($connection, 'SELECT author_name FROM authors WHERE author_id=' . $authorID) or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
 	if (mysqli_num_rows($q) == 0)
 	{
-		$error='Няма такъв автор!';
+		$error = 'Няма такъв автор!';
+	}
+	$q = mysqli_query($connection, 'SELECT * FROM books_authors WHERE book_id=' . $bookID . ' AND author_id=' . $authorID) or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
+	if (mysqli_num_rows($q) > 0)
+	{
+		$error = 'Посоченият автор вече е автор на посочената книга!';
 	}
 
 	if (!isset($error))

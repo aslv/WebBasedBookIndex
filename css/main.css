@@ -216,7 +216,13 @@ img {
 }
 .filter {
     float: right;
-    text-align: left;
+    margin-top: 10px;
+    padding: 3px;
+    // padding-left: 10px;
+    overflow: auto;
+    border: 2px solid #70AAFF;
+    border-radius: 10px;
+    text-align: center;
 }
 .search {
     margin: 0;

@@ -8,9 +8,13 @@
             $connection = db_connect();
             $author = trim($_GET['search']);
             $author = mysqli_real_escape_string($connection, $author);
+            if (mb_strlen($author) < 3)
+            {
+                $error_ = 'Дължината на името на автора не може да е по-малка от 3 символа!';
+            }
             $query = 'SELECT author_id FROM authors WHERE author_name="' . $author . '"';
             $q = mysqli_query($connection, $query) or $error_ = 'Възникна грешка!<br>Моля, опитайте по-късно!';
-            if (!isset($error))
+            if (!isset($error_))
             {
                 if (mysqli_num_rows($q) == 0)
                 {
@@ -20,6 +24,7 @@
                 {
                     $row = mysqli_fetch_assoc($q);
                     header('Location: author_books.php?author_id=' . $row['author_id']);
+                    exit;
                 }
             }
         }

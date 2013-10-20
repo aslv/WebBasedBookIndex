@@ -17,19 +17,23 @@ if (isset($_GET) && isset($_GET['authors']) && isset($_GET['title']))
 	{ 
 		$validatedIDSs[$i] =mysqli_real_escape_string($connection, $validatedIDSs[$i]);
 	}
-
+	// now in $validatedIDSs[] we have all author_ids normalized and validated
 	if (mb_strlen($title) < 3)
 	{
 		$error = 'Дължината на наименованието на книгата не трябва да е по-малка от 3 символа!';
 	}
 
-	//
 	$q = mysqli_query($connection, 'SELECT book_id FROM books WHERE book_title="' . $title . '"') or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
 	if (mysqli_num_rows($q) > 0)
 	{
 		$error = 'Вече има въведена книга с такова име!<br>Моля, изберете друго!';
 	}
-	//
+	
+	/*
+	these nested loops may seem a bit complicated,
+	but we just check if there really are authors with passed IDs
+	so in $realIDs[] we have list of those passed author_ids, which identify existing authors
+	*/
 	$q = mysqli_query($connection, 'SELECT author_id FROM authors') or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
 	$realIDs = array();
 	while ($row = mysqli_fetch_assoc($q))
@@ -75,10 +79,6 @@ if (isset($_GET) && isset($_GET['authors']) && isset($_GET['title']))
 				$query .= '(' . $bookID . ', ' . $realIDs[$i] . '),';
 			}
 			$query .= '(' . $bookID . ', ' . $realIDs[$lengthMinus1] . ')';
-			/*
-			echo '\'' . $query . '\'';
-			exit;
-			*/
 			mysqli_query($connection, $query) or $error='Възникна грешка!<br>Моля, опитайте по-късно!';
 			if (!isset($error))
 			{

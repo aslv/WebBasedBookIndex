@@ -3,6 +3,7 @@ mb_internal_encoding('UTF-8');
 
 $heading = 'Каталог за книги';
 
+// using default DB user
 $db_host = 'localhost';
 $db_user = 'root';
 $db_pass = '';

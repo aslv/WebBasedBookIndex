@@ -62,11 +62,15 @@ include 'includes' . DIRECTORY_SEPARATOR . 'header.php';
 				$query = 'SELECT * FROM books_authors AS b1, books_authors AS b2
 						  LEFT JOIN authors ON authors.author_id=b2.author_id
 						  LEFT JOIN books ON b2.book_id=books.book_id
-						  WHERE b1.author_id='. $authorID . ' AND b2.book_id=b1.book_id';
-				/*
-				echo '\'' . $query . '\'';
-				exit;
-				*/
+						  WHERE b1.author_id=' . $authorID . ' AND b2.book_id=b1.book_id';
+				if (isset($_POST['sort']))
+				{
+					$sort = strtoupper(mysqli_real_escape_string($connection, trim($_POST['sort'])));
+					if ($sort == 'ASC' || $sort == 'DESC')
+					{
+						$query .= ' ORDER BY books.book_title ' . $sort;
+					}
+				}
 				$q = mysqli_query($connection, $query) or $error = 'Възникна грешка!<br>Моля, опитайте по-късно!';
 				if (!isset($error))
 				{
@@ -75,8 +79,6 @@ include 'includes' . DIRECTORY_SEPARATOR . 'header.php';
 					{
 						$result[$row['book_id']]['book_title'] = $row['book_title'];
 						$result[$row['book_id']]['author_names'][] = array('author_name' => $row['author_name'], 'author_id' => $row['author_id']);
-
-						//echo '<tr><td>' . $row['book_title'] . '</td><td>' . $row['author_name'] . '</td></tr>';
 					}
 					//echo '<pre>' . print_r($result, true) . '</pre>';
 					foreach ($result as $index => $book)
@@ -97,7 +99,9 @@ include 'includes' . DIRECTORY_SEPARATOR . 'header.php';
 			}
 			?>
 		</table>
-
+		<?php
+		include 'includes' . DIRECTORY_SEPARATOR . 'sort.php';
+		?>
 	</section>
 
 	<?php
